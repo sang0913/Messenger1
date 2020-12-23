@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import FirebaseAuth
 class RegisterViewController: UIViewController, UINavigationControllerDelegate {
     private let scrollView :UIScrollView = {
         let scrollView = UIScrollView ()
@@ -17,12 +17,13 @@ class RegisterViewController: UIViewController, UINavigationControllerDelegate {
     //Tạo Logo
     private let imageView : UIImageView = {
         let imageView = UIImageView ()
-        imageView.image = UIImage(systemName: "person")
+        imageView.image = UIImage(systemName: "heart.circle.fill")
         imageView.contentMode = .scaleAspectFit
         imageView.layer.cornerRadius = 2
         imageView.layer.masksToBounds = true
         imageView.layer.borderColor = UIColor.gray.cgColor
-        
+     
+        imageView.tintColor = .systemPink
         return imageView
     }()
     private let FirstName: UITextField = {
@@ -104,7 +105,7 @@ class RegisterViewController: UIViewController, UINavigationControllerDelegate {
         return button
     }()
     
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Đăng nhập"
@@ -177,19 +178,50 @@ class RegisterViewController: UIViewController, UINavigationControllerDelegate {
     
     
     @objc private func loginButtonTapped () {
-        
-        guard let email = emailField.text, let password = PassWordField.text,let firstName = FirstName.text,let lastName = LastName.text,
-              !email.isEmpty,!firstName.isEmpty,!lastName.isEmpty, !password.isEmpty,password.count >= 6 else {
+            guard let email = emailField.text,
+              let password = PassWordField.text,
+              let firstName = FirstName.text,
+              let lastName = LastName.text,
+              !email.isEmpty,
+              !firstName.isEmpty,
+              !lastName.isEmpty,
+              !password.isEmpty,
+              password.count >= 6 else {
             
-            alertButtonTapped ()
+            alertUserLoginError ()
             return
         }
+        //firebase log in
+        DatabaseManager.shared.userExists(with: email, completion: {[weak self] exists in
+            guard let strongSelf = self else {
+                return
+            }
+            guard !exists else {
+                // user already exists
+                strongSelf.alertUserLoginError(message: "Look like a user account for that email address already exists"  )
+                return
+            }
+            FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password, completion: {  authResult , error in
+                
+                guard authResult != nil, error == nil else {
+                    
+                    print("Error creating user!")
+                    return
+                }
+                
+                DatabaseManager.shared.insertUser(with: ChatAPpUser(firstName: firstName,
+                                                                    lastName: lastName,
+                                                                    emailAddress: email))
+                
+                strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+            })
+        })
+     
     }
-  
-    func alertButtonTapped () {
+    func alertUserLoginError (message:String = "Please inter full information to register!" ) {
         
         let alert = UIAlertController(title: "Notice!",
-                                      message: "Please inter full information to register!" ,
+                                      message: message,
                                       preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Dissmiss",
                                       style: .cancel,
@@ -212,6 +244,8 @@ extension RegisterViewController: UITextFieldDelegate {
         }
         return true
 }
+  
+    
 }
 extension RegisterViewController : UIImagePickerControllerDelegate {
     
@@ -272,3 +306,5 @@ extension RegisterViewController : UIImagePickerControllerDelegate {
         picker.dismiss(animated: true, completion: nil)
     }
 }
+
+    
