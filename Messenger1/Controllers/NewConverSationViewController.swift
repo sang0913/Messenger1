@@ -8,6 +8,7 @@
 import UIKit
 import JGProgressHUD
 class NewConverSationViewController: UIViewController {
+    
     let spinner = JGProgressHUD()
     
     private let searchBar: UISearchBar = {
