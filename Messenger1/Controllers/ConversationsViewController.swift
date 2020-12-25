@@ -10,7 +10,7 @@ import FirebaseAuth
 import JGProgressHUD
 class ConversationsViewController: UIViewController {
     
-    private let sniper = JGProgressHUD(style: .dark)
+    private let spinner = JGProgressHUD(style: .dark)
     
     private let tableView: UITableView = {
         let table = UITableView()
@@ -33,12 +33,15 @@ class ConversationsViewController: UIViewController {
     }()
     override func viewDidLoad() {
         super.viewDidLoad()
+       
         view.addSubview(tableView)
         view.addSubview(noConversationLable)
         setupTableView()
         fetchConversation()
 //        DatabaseManager.shared.test()
     }
+    
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.frame = view.bounds
@@ -69,6 +72,7 @@ class ConversationsViewController: UIViewController {
     }
     private func fetchConversation() {
         tableView.isHidden = false
+        
     }
 }
 
@@ -81,6 +85,7 @@ extension ConversationsViewController:UITableViewDelegate,UITableViewDataSource 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for : indexPath)
         cell.textLabel?.text = "Hello World"
+        cell.accessoryType = .disclosureIndicator
         return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

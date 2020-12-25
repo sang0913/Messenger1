@@ -203,8 +203,7 @@ class RegisterViewController: UIViewController, UINavigationControllerDelegate {
                 return
             }
             DispatchQueue.main.async {
-                strongSelf.spinner.dismiss()
-            }
+                strongSelf.spinner.dismiss()   }
             guard !exists else {
                 // user already exists
                 strongSelf.alertUserLoginError(message: "Look like a user account for that email address already exists"  )
