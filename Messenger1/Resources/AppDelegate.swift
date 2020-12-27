@@ -50,7 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,GIDSignInDelegate {
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
         guard error == nil else {
             if let error = error {
-                print("Failed to log in with Google")
+                print("Failed to log in with Google\(error)")
             }
             return
         }
@@ -73,8 +73,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate,GIDSignInDelegate {
                 //insert database
                 DatabaseManager.shared.insertUser(with: chatUser , completion: { success in
                     if success {
-                        //upload picture
-                        
+                        if user.profile.hasImage {
+                            guard let url = user.profile.imageURL(withDimension: 200) else {
+                                
+                                return
+                            }
+                            URLSession.shared.dataTask(with: url, completionHandler: { data, _ , _ in
+                                guard let data = data else {
+                                return
+                                }
+                                let fileName = chatUser.profilePictureFileName
+                                StorageManager.shared.uploadProfilepicture(with: data,
+                                                                           fileName: fileName,
+                                                                           completion: { result in
+                                                                            switch result {
+                                                                            case .success(let downloadUrl):
+                                                                                UserDefaults.standard.setValue(downloadUrl, forKey: "profile_picture_url")
+                                                                                print(downloadUrl)
+                                                                            case .failure(let error) :
+                                                                                print("Storage manager error:\(error)")
+                                                                            }
+                                                                           })
+                            }).resume()
+                        }
                     }
                 })
             }
