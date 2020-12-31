@@ -62,7 +62,7 @@ class LoginViewController: UIViewController {
         
     }()
     //tạo nút đăng nhập
-
+    
     private let logginButton:UIButton = {
         let button = UIButton()
         button.setTitle("Đăng nhập", for: .normal)
@@ -80,12 +80,12 @@ class LoginViewController: UIViewController {
     }()
     
     
-        private let googleLoginButton = GIDSignInButton()
+    private let googleLoginButton = GIDSignInButton()
     
     private var loginObserve : NSObjectProtocol?
     
-        
-
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -111,9 +111,9 @@ class LoginViewController: UIViewController {
         logginButton.addTarget(self,
                                action: #selector(loginButtonTapped)
                                , for: .touchUpInside)
-    
-                                                            
-                                                            
+        
+        
+        
         
         emailField.delegate = self
         PassWordField.delegate = self
@@ -124,7 +124,7 @@ class LoginViewController: UIViewController {
         scrollView.addSubview(emailField)
         scrollView.addSubview(PassWordField)
         scrollView.addSubview(logginButton)
-
+        
         scrollView.addSubview(facebookLoginButton)
         scrollView.addSubview(googleLoginButton)
     }
@@ -145,31 +145,25 @@ class LoginViewController: UIViewController {
         emailField.frame = CGRect(x:30,
                                   y: imageView.bottom + 10 ,
                                   width: scrollView.width - 60,
-                                 height: 52)
+                                  height: 52)
         PassWordField.frame = CGRect(x:30,
-                                  y: emailField.bottom + 10 ,
-                                  width: scrollView.width - 60,
-                                 height: 52)
+                                     y: emailField.bottom + 10 ,
+                                     width: scrollView.width - 60,
+                                     height: 52)
         logginButton.frame = CGRect(x:30,
-                                  y: PassWordField.bottom + 10 ,
-                                  width: scrollView.width - 60,
-                                 height: 52)
+                                    y: PassWordField.bottom + 10 ,
+                                    width: scrollView.width - 60,
+                                    height: 52)
         facebookLoginButton.frame = CGRect(x:30,
-                                  y: logginButton.bottom + 10 ,
-                                  width: scrollView.width - 60,
-                                 height: 52)
+                                           y: logginButton.bottom + 10 ,
+                                           width: scrollView.width - 60,
+                                           height: 52)
         googleLoginButton.frame = CGRect(x:30,
-                                  y: facebookLoginButton.bottom + 10 ,
-                                  width: scrollView.width - 60,
-                                 height: 52)
-        
-        
-            
-        
+                                         y: facebookLoginButton.bottom + 10 ,
+                                         width: scrollView.width - 60,
+                                         height: 52)
         
     }
-    
-
     
     @objc private func didTapRegister() {
         let vc = RegisterViewController()
@@ -199,12 +193,13 @@ class LoginViewController: UIViewController {
             DispatchQueue.main.async {
                 strongSelf.spinner.dismiss()
             }
-
+            
             guard let result = authResult,error == nil else {
-                print("Failed to log in with email :\(email)")
+                print("Failed to log in user with email :\(email)")
                 return
             }
             let user = result.user
+            UserDefaults.standard.set(email, forKey: "email")
             print("Loged in with user \(user)")
             strongSelf.navigationController?.dismiss(animated: true, completion: nil)
         })
@@ -267,11 +262,12 @@ extension LoginViewController:LoginButtonDelegate {
                   let picture = result["picture"] as? [String : Any],
                   let data = picture["data"] as? [String: Any],
                   let pictureUrl = data["url"] as? String
-                  else {
+            else {
                 print("Failed to get email and name from fb result")
                 return
             }
-            
+            UserDefaults.standard.set(email, forKey: "email")
+
             
             DatabaseManager.shared.userExists(with: email, completion: { exists in
                 if !exists {
@@ -305,14 +301,14 @@ extension LoginViewController:LoginButtonDelegate {
                                                                            })
                             }).resume()
                         }
-                      
+                        
                         //
                     })
                     
                 }
-            
+                
             })
-        
+            
             
             let credential = FacebookAuthProvider.credential(withAccessToken: token)
             FirebaseAuth.Auth.auth().signIn(with: credential,

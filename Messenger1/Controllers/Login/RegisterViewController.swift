@@ -9,7 +9,7 @@ import UIKit
 import FirebaseAuth
 import JGProgressHUD
 class RegisterViewController: UIViewController, UINavigationControllerDelegate {
-   
+    
     private let spinner = JGProgressHUD(style: .dark)
     
     
@@ -27,7 +27,7 @@ class RegisterViewController: UIViewController, UINavigationControllerDelegate {
         imageView.layer.cornerRadius = 2
         imageView.layer.masksToBounds = true
         imageView.layer.borderColor = UIColor.gray.cgColor
-     
+        
         imageView.tintColor = .systemPink
         return imageView
     }()
@@ -98,7 +98,7 @@ class RegisterViewController: UIViewController, UINavigationControllerDelegate {
         
     }()
     //tạo nút đăng nhập
-
+    
     private let logginButton:UIButton = {
         let button = UIButton()
         button.setTitle("Đăng kí", for: .normal)
@@ -116,7 +116,7 @@ class RegisterViewController: UIViewController, UINavigationControllerDelegate {
         title = "Đăng nhập"
         view.backgroundColor = .white
         //create bar button and navigation it
-       
+        
         logginButton.addTarget(self,
                                action: #selector(loginButtonTapped)
                                , for: .touchUpInside)
@@ -138,7 +138,7 @@ class RegisterViewController: UIViewController, UINavigationControllerDelegate {
     @objc private func  didtaptochangePicprofile() {
         didtapChangePicProfile()
     }
-  
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         scrollView.frame = view.bounds
@@ -147,30 +147,30 @@ class RegisterViewController: UIViewController, UINavigationControllerDelegate {
                                  y: 20,
                                  width: size,
                                  height: size)
- 
+        
         imageView.layer.cornerRadius = imageView.width / 2
         
-     
+        
         FirstName.frame = CGRect(x:30,
-                                  y: imageView.bottom + 10 ,
-                                  width: scrollView.width - 60,
+                                 y: imageView.bottom + 10 ,
+                                 width: scrollView.width - 60,
                                  height: 52)
         LastName.frame = CGRect(x:30,
-                                  y: FirstName.bottom + 10 ,
-                                  width: scrollView.width - 60,
-                                 height: 52)
+                                y: FirstName.bottom + 10 ,
+                                width: scrollView.width - 60,
+                                height: 52)
         emailField.frame = CGRect(x:30,
                                   y: LastName.bottom + 10 ,
                                   width: scrollView.width - 60,
-                                 height: 52)
+                                  height: 52)
         PassWordField.frame = CGRect(x:30,
-                                  y: emailField.bottom + 10 ,
-                                  width: scrollView.width - 60,
-                                 height: 52)
+                                     y: emailField.bottom + 10 ,
+                                     width: scrollView.width - 60,
+                                     height: 52)
         logginButton.frame = CGRect(x:30,
-                                  y: PassWordField.bottom + 10 ,
-                                  width: scrollView.width - 60,
-                                 height: 52)
+                                    y: PassWordField.bottom + 10 ,
+                                    width: scrollView.width - 60,
+                                    height: 52)
     }
     
     
@@ -183,7 +183,7 @@ class RegisterViewController: UIViewController, UINavigationControllerDelegate {
     
     
     @objc private func loginButtonTapped () {
-            guard let email = emailField.text,
+        guard let email = emailField.text,
               let password = PassWordField.text,
               let firstName = FirstName.text,
               let lastName = LastName.text,
@@ -244,7 +244,7 @@ class RegisterViewController: UIViewController, UINavigationControllerDelegate {
                 strongSelf.navigationController?.dismiss(animated: true, completion: nil)
             })
         })
-     
+        
     }
     func alertUserLoginError (message:String = "Please inter full information to register!" ) {
         
@@ -257,7 +257,7 @@ class RegisterViewController: UIViewController, UINavigationControllerDelegate {
         
         present(alert,animated: true)
     }
-
+    
     
     
     
@@ -271,8 +271,8 @@ extension RegisterViewController: UITextFieldDelegate {
             loginButtonTapped()
         }
         return true
-}
-  
+    }
+    
     
 }
 extension RegisterViewController : UIImagePickerControllerDelegate {
@@ -296,11 +296,11 @@ extension RegisterViewController : UIImagePickerControllerDelegate {
                                              style: .cancel,
                                              handler: nil))
         
-    
-    present(acctionsheet,animated: true)
-    
-    
-}
+        
+        present(acctionsheet,animated: true)
+        
+        
+    }
     
     func presentcamera() {
         let vc = UIImagePickerController()
@@ -317,17 +317,17 @@ extension RegisterViewController : UIImagePickerControllerDelegate {
         vc.delegate = self
         present(vc,animated: true)
     }
-//    imageView.layer.cornerRadius = 2
-//    imageView.layer.masksToBounds = true
-//    imageView.layer.borderColor = UIColor.gray.cgColor
-//    imageView.layer.cornerRadius = imageView.width / 2
+    //    imageView.layer.cornerRadius = 2
+    //    imageView.layer.masksToBounds = true
+    //    imageView.layer.borderColor = UIColor.gray.cgColor
+    //    imageView.layer.cornerRadius = imageView.width / 2
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
         
         guard let selectimage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else {
             return
         }
-         
+        
         self.imageView.image = selectimage
     }
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -335,4 +335,4 @@ extension RegisterViewController : UIImagePickerControllerDelegate {
     }
 }
 
-    
+
